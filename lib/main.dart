@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'data/models/character_model.dart';
-import 'data/repositories/character_repository.dart';
 import 'presentation/blocs/character/character_bloc.dart';
+import 'presentation/blocs/theme/theme_bloc.dart';
+import 'data/repositories/character_repository.dart';
 import 'presentation/pages/home_page.dart';
 
 void main() async {
@@ -12,8 +13,17 @@ void main() async {
   Hive.registerAdapter(CharacterAdapter());
 
   await Hive.openBox<Character>('characters');
-
-  runApp(const MyApp());
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => ThemeBloc()),
+        BlocProvider(
+            create: (context) =>
+                CharacterBloc(repository: CharacterRepository())),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -21,11 +31,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: BlocProvider(
-        create: (context) => CharacterBloc(repository: CharacterRepository()),
-        child: const HomePage(),
-      ),
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, state) {
+        return MaterialApp(
+          theme: state is ThemeDark ? ThemeData.dark() : ThemeData.light(),
+          home: const HomePage(),
+        );
+      },
     );
   }
 }

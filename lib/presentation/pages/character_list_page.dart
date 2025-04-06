@@ -3,13 +3,31 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/character/character_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../blocs/theme/theme_bloc.dart';
+
 class CharacterListPage extends StatelessWidget {
   const CharacterListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Characters')),
+      appBar: AppBar(
+        title: const Text('Characters'),
+        actions: [
+          IconButton(
+            icon: BlocBuilder<ThemeBloc, ThemeState>(
+              builder: (context, state) {
+                return Icon(
+                  state is ThemeDark ? Icons.light_mode : Icons.dark_mode,
+                );
+              },
+            ),
+            onPressed: () {
+              context.read<ThemeBloc>().add(ToggleTheme());
+            },
+          ),
+        ],
+      ),
       body: BlocBuilder<CharacterBloc, CharacterState>(
         builder: (context, state) {
           if (state is CharacterInitial) {
