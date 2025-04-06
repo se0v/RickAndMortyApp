@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../data/models/character_model.dart';
-import '../../data/repositories/character_repository.dart';
+import '../../../data/models/character_model.dart';
+import '../../../data/repositories/character_repository.dart';
 
 part 'character_event.dart';
 part 'character_state.dart';

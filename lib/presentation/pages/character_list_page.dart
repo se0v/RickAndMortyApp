@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../presentation/blocs/character_bloc.dart';
+import '../blocs/character/character_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class CharacterListPage extends StatelessWidget {

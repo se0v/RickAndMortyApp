@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/models/character_model.dart';
-import '../../presentation/blocs/character_bloc.dart';
+import '../blocs/character/character_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class FavoritesPage extends StatefulWidget {
@@ -12,7 +12,7 @@ class FavoritesPage extends StatefulWidget {
 }
 
 class _FavoritesPageState extends State<FavoritesPage> {
-  bool _isSorted = false; // Флаг для отслеживания состояния сортировки
+  bool _isSorted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
             icon: Icon(_isSorted ? Icons.sort_by_alpha : Icons.sort),
             onPressed: () {
               setState(() {
-                _isSorted = !_isSorted; // Переключаем состояние сортировки
+                _isSorted = !_isSorted;
               });
             },
           ),
@@ -37,7 +37,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 .where((character) => character.isFavorite)
                 .toList();
 
-            // Сортируем только если флаг активен
             if (_isSorted) {
               favorites.sort((a, b) => a.name.compareTo(b.name));
             }
