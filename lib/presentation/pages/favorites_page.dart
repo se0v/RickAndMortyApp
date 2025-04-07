@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/models/character_model.dart';
 import '../blocs/character/character_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../utils/animation_utils.dart';
 
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({super.key});
@@ -11,8 +12,28 @@ class FavoritesPage extends StatefulWidget {
   State<FavoritesPage> createState() => _FavoritesPageState();
 }
 
-class _FavoritesPageState extends State<FavoritesPage> {
+class _FavoritesPageState extends State<FavoritesPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
   bool _isSorted = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,26 +70,36 @@ class _FavoritesPageState extends State<FavoritesPage> {
               itemCount: favorites.length,
               itemBuilder: (context, index) {
                 final character = favorites[index];
-                return ListTile(
-                  leading: CachedNetworkImage(
-                    imageUrl: character.image,
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
-                  ),
-                  title: Text(character.name),
-                  subtitle: Text('${character.status} - ${character.species}'),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.star),
-                    onPressed: () {
-                      context
-                          .read<CharacterBloc>()
-                          .add(ToggleFavorite(character: character));
-                    },
+
+                final listAnimation = ListAnimation(
+                  controller: _animationController,
+                  index: index,
+                  totalItems: favorites.length,
+                );
+
+                return listAnimation.buildAnimatedItem(
+                  ListTile(
+                    leading: CachedNetworkImage(
+                      imageUrl: character.image,
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    ),
+                    title: Text(character.name),
+                    subtitle:
+                        Text('${character.status} - ${character.species}'),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.star),
+                      onPressed: () {
+                        context
+                            .read<CharacterBloc>()
+                            .add(ToggleFavorite(character: character));
+                      },
+                    ),
                   ),
                 );
               },
