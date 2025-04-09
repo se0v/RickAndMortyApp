@@ -29,8 +29,23 @@ class CharacterRepository {
         final newCharacters =
             results.map((json) => Character.fromJson(json)).toList();
 
+        final liked =
+            _box.values.where((e) => e.isFavorite).map((e) => e.id).toList();
+
         for (var character in newCharacters) {
-          _box.put(character.id, character);
+          Character newCharacter = character;
+          if (liked.contains(character.id)) {
+            newCharacter = character.copyWith(isFavorite: true);
+
+            final index = newCharacters.indexOf(character);
+
+            newCharacters.removeAt(index);
+            newCharacters.insert(index, newCharacter);
+          }
+
+          if (!_box.containsKey(character.id)) {
+            _box.put(character.id, newCharacter);
+          }
         }
 
         return newCharacters;
@@ -42,10 +57,15 @@ class CharacterRepository {
       const pageSize = 20;
       final start = (page - 1) * pageSize;
       final end = start + pageSize;
+      final finalEnd = end < allCharacters.length ? end : allCharacters.length;
+
+      if (start >= allCharacters.length) {
+        return [];
+      }
 
       return allCharacters.sublist(
         start,
-        end < allCharacters.length ? end : allCharacters.length,
+        finalEnd,
       );
     }
   }
@@ -54,8 +74,7 @@ class CharacterRepository {
     return _box.values.where((character) => character.isFavorite).toList();
   }
 
-  void toggleFavorite(Character character) {
-    character.isFavorite = !character.isFavorite;
+  void updateCharacter(Character character) {
     _box.put(character.id, character);
   }
 }

@@ -10,44 +10,57 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
   List<Character> _characters = [];
   int _currentPage = 1;
 
-  CharacterBloc({required this.repository}) : super(CharacterInitial()) {
-    on<FetchCharacters>((event, emit) async {
-      try {
-        if (_currentPage == 1) {
-          emit(CharacterLoading());
-        }
+  CharacterBloc({required this.repository}) : super(CharacterLoading()) {
+    on<FetchCharacters>(_onFetchCharacters);
+    on<ToggleFavorite>(_onToggleFavorite);
 
-        final newCharacters =
-            await repository.fetchCharacters(page: event.page);
-        _characters.addAll(newCharacters);
+    add(FetchCharacters(page: 1));
+  }
 
-        emit(CharacterLoaded(
-          characters: _characters,
-          currentPage: _currentPage,
-        ));
-      } catch (e) {
-        emit(CharacterError(e.toString()));
+  Future<void> _onFetchCharacters(event, emit) async {
+    final currentState = state;
+    try {
+      if (currentState is CharacterLoaded) {
+        emit(
+          currentState.copyWith(isLoading: true),
+        );
+      } else {
+        emit(CharacterLoading());
       }
-    });
 
-    on<ToggleFavorite>((event, emit) async {
-      final updatedCharacter = event.character.copyWith(
-        isFavorite: !event.character.isFavorite,
-      );
+      await Future.delayed(Duration(seconds: 2));
 
-      _characters = _characters.map((character) {
-        if (character.id == updatedCharacter.id) {
-          return updatedCharacter;
-        }
-        return character;
-      }).toList();
+      final newCharacters = await repository.fetchCharacters(page: event.page);
+      _characters.addAll(newCharacters);
 
-      emit(CharacterUpdated());
       emit(CharacterLoaded(
         characters: _characters,
-        currentPage: _currentPage,
+        isLastPage: newCharacters.isEmpty,
       ));
-    });
+    } catch (e, st) {
+      emit(CharacterError(e.toString()));
+      print(st);
+    }
+  }
+
+  Future<void> _onToggleFavorite(event, emit) async {
+    final updatedCharacter = event.character.copyWith(
+      isFavorite: !event.character.isFavorite,
+    );
+
+    _characters = _characters.map<Character>((character) {
+      if (character.id == updatedCharacter.id) {
+        return updatedCharacter;
+      }
+      return character;
+    }).toList();
+
+    //TODO:
+    repository.updateCharacter(updatedCharacter);
+
+    emit(CharacterLoaded(
+      characters: _characters,
+    ));
   }
 
   void loadNextPage() {

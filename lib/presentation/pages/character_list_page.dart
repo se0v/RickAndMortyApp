@@ -13,12 +13,12 @@ class CharacterListPage extends StatefulWidget {
 
 class _CharacterListPageState extends State<CharacterListPage> {
   final ScrollController _scrollController = ScrollController();
-  bool _isLoadingMore = false;
+  late final CharacterBloc _bloc;
 
   @override
   void initState() {
     super.initState();
-
+    _bloc = context.read<CharacterBloc>();
     _scrollController.addListener(_onScroll);
   }
 
@@ -29,25 +29,14 @@ class _CharacterListPageState extends State<CharacterListPage> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
-        !_isLoadingMore) {
-      _loadMoreCharacters();
+    final state = _bloc.state;
+    if (_scrollController.position.pixels >
+            _scrollController.position.maxScrollExtent - 100 &&
+        state is CharacterLoaded &&
+        !state.isLoading &&
+        !state.isLastPage) {
+      _bloc.loadNextPage();
     }
-  }
-
-  void _loadMoreCharacters() {
-    setState(() {
-      _isLoadingMore = true;
-    });
-
-    context.read<CharacterBloc>().loadNextPage();
-
-    Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        _isLoadingMore = false;
-      });
-    });
   }
 
   @override
@@ -72,15 +61,12 @@ class _CharacterListPageState extends State<CharacterListPage> {
       ),
       body: BlocBuilder<CharacterBloc, CharacterState>(
         builder: (context, state) {
-          if (state is CharacterInitial) {
-            context.read<CharacterBloc>().add(FetchCharacters(page: 1));
-            return const Center(child: Text('Initializing...'));
-          } else if (state is CharacterLoading && state is! CharacterLoaded) {
+          if (state is CharacterLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is CharacterLoaded) {
             return ListView.builder(
               controller: _scrollController,
-              itemCount: state.characters.length + (_isLoadingMore ? 1 : 0),
+              itemCount: state.characters.length + (state.isLoading ? 1 : 0),
               itemBuilder: (context, index) {
                 if (index < state.characters.length) {
                   final character = state.characters[index];
@@ -104,8 +90,6 @@ class _CharacterListPageState extends State<CharacterListPage> {
             );
           } else if (state is CharacterError) {
             return Center(child: Text(state.message));
-          } else if (state is CharacterUpdated) {
-            return const Center(child: Text('Favorites updated!'));
           } else {
             return const Center(child: Text('Unknown state'));
           }

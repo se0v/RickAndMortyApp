@@ -20,7 +20,7 @@ class Character {
   final String image;
 
   @HiveField(5)
-  bool isFavorite;
+  final bool isFavorite;
 
   Character({
     required this.id,
