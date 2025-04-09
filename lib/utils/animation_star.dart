@@ -1,6 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:randmapp/data/models/character_model.dart';
+import '../../data/models/character_model.dart';
 
 class FavoriteItemTile extends StatefulWidget {
   final Character character;
@@ -27,7 +26,7 @@ class _FavoriteItemTileState extends State<FavoriteItemTile>
 
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 200),
     );
 
     _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
@@ -44,12 +43,12 @@ class _FavoriteItemTileState extends State<FavoriteItemTile>
     super.dispose();
   }
 
-  void _animateStar() {
-    _animationController.forward().then((_) {
-      Future.delayed(const Duration(milliseconds: 100), () {
-        _animationController.reverse();
-      });
-    });
+  Future<void> _animateStar() async {
+    await _animationController.forward();
+    await Future.delayed(const Duration(milliseconds: 100));
+    await _animationController.reverse();
+
+    widget.onToggleFavorite();
   }
 
   @override
@@ -60,22 +59,18 @@ class _FavoriteItemTileState extends State<FavoriteItemTile>
         return Transform.scale(
           scale: _scaleAnimation.value,
           child: ListTile(
-            leading: CachedNetworkImage(
-              imageUrl: widget.character.image,
-              placeholder: (context, url) => const CircularProgressIndicator(),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-              width: 50,
-              height: 50,
-              fit: BoxFit.cover,
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(widget.character.image),
             ),
             title: Text(widget.character.name),
             subtitle: Text(
                 '${widget.character.status} - ${widget.character.species}'),
             trailing: IconButton(
-              icon: const Icon(Icons.star),
+              icon: Icon(
+                widget.character.isFavorite ? Icons.star : Icons.star_border,
+              ),
               onPressed: () {
                 _animateStar();
-                widget.onToggleFavorite();
               },
             ),
           ),

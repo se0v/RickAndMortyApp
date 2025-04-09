@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../utils/animation_star.dart';
 import '../blocs/character/character_bloc.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-
 import '../blocs/theme/theme_bloc.dart';
 
 class CharacterListPage extends StatelessWidget {
@@ -40,28 +39,13 @@ class CharacterListPage extends StatelessWidget {
               itemCount: state.characters.length,
               itemBuilder: (context, index) {
                 final character = state.characters[index];
-                return ListTile(
-                  leading: CachedNetworkImage(
-                    imageUrl: character.image,
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
-                  ),
-                  title: Text(character.name),
-                  subtitle: Text('${character.status} - ${character.species}'),
-                  trailing: IconButton(
-                    icon: Icon(
-                        character.isFavorite ? Icons.star : Icons.star_border),
-                    onPressed: () {
-                      context
-                          .read<CharacterBloc>()
-                          .add(ToggleFavorite(character: character));
-                    },
-                  ),
+                return FavoriteItemTile(
+                  character: character,
+                  onToggleFavorite: () {
+                    context
+                        .read<CharacterBloc>()
+                        .add(ToggleFavorite(character: character));
+                  },
                 );
               },
             );
