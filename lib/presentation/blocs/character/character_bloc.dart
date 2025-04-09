@@ -1,41 +1,57 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../data/models/character_model.dart';
-import '../../../data/repositories/character_repository.dart';
+import 'package:randmapp/data/models/character_model.dart';
+import 'package:randmapp/data/repositories/character_repository.dart';
 
 part 'character_event.dart';
 part 'character_state.dart';
 
 class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
   final CharacterRepository repository;
+  List<Character> _characters = [];
+  int _currentPage = 1;
 
   CharacterBloc({required this.repository}) : super(CharacterInitial()) {
-    on<FetchCharacters>(_onFetchCharacters);
-    on<ToggleFavorite>(_onToggleFavorite);
-  }
+    on<FetchCharacters>((event, emit) async {
+      try {
+        if (_currentPage == 1) {
+          emit(CharacterLoading());
+        }
 
-  Future<void> _onFetchCharacters(
-      FetchCharacters event, Emitter<CharacterState> emit) async {
-    emit(CharacterLoading());
-    try {
-      final characters = await repository.fetchCharacters(event.page);
-      emit(CharacterLoaded(characters: characters));
-    } catch (e) {
-      emit(CharacterError(message: e.toString()));
-    }
-  }
+        final newCharacters =
+            await repository.fetchCharacters(page: event.page);
+        _characters.addAll(newCharacters);
 
-  void _onToggleFavorite(
-      ToggleFavorite event, Emitter<CharacterState> emit) async {
-    final updatedCharacters =
-        List<Character>.from((state as CharacterLoaded).characters);
-    final characterIndex =
-        updatedCharacters.indexWhere((c) => c.id == event.character.id);
-    if (characterIndex != -1) {
-      updatedCharacters[characterIndex] =
-          updatedCharacters[characterIndex].copyWith(
-        isFavorite: !updatedCharacters[characterIndex].isFavorite,
+        emit(CharacterLoaded(
+          characters: _characters,
+          currentPage: _currentPage,
+        ));
+      } catch (e) {
+        emit(CharacterError(e.toString()));
+      }
+    });
+
+    on<ToggleFavorite>((event, emit) async {
+      final updatedCharacter = event.character.copyWith(
+        isFavorite: !event.character.isFavorite,
       );
-      emit(CharacterLoaded(characters: updatedCharacters));
-    }
+
+      _characters = _characters.map((character) {
+        if (character.id == updatedCharacter.id) {
+          return updatedCharacter;
+        }
+        return character;
+      }).toList();
+
+      emit(CharacterUpdated());
+      emit(CharacterLoaded(
+        characters: _characters,
+        currentPage: _currentPage,
+      ));
+    });
+  }
+
+  void loadNextPage() {
+    _currentPage++;
+    add(FetchCharacters(page: _currentPage));
   }
 }

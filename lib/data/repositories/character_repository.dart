@@ -7,7 +7,7 @@ class CharacterRepository {
   final String baseUrl = 'https://rickandmortyapi.com/api/character';
   final Box<Character> _box = Hive.box<Character>('characters');
 
-  Future<List<Character>> fetchCharacters(int page) async {
+  Future<List<Character>> fetchCharacters({required int page}) async {
     final response = await http.get(Uri.parse('$baseUrl?page=$page'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);

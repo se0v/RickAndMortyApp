@@ -8,14 +8,15 @@ class CharacterLoading extends CharacterState {}
 
 class CharacterLoaded extends CharacterState {
   final List<Character> characters;
+  final int currentPage;
 
-  CharacterLoaded({required this.characters});
+  CharacterLoaded({required this.characters, required this.currentPage});
 }
 
 class CharacterError extends CharacterState {
   final String message;
 
-  CharacterError({required this.message});
+  CharacterError(this.message);
 }
 
 class CharacterUpdated extends CharacterState {}
