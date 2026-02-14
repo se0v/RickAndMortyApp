@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:randmapp/core/di.dart';
 import 'package:randmapp/core/di.dart' as di;
+import 'package:randmapp/domain/repositories/character_repository.dart';
 import 'package:randmapp/domain/usecases/get_characters.dart';
 import 'package:randmapp/domain/usecases/get_favorites.dart';
 import 'data/models/character_model.dart';
@@ -25,8 +26,8 @@ void main() async {
         BlocProvider(
             create: (context) =>
                 CharacterBloc(
-                  getCharacters: sl<GetCharacters>(), 
-                  getFavorites: sl<GetFavorites>())),
+                  //getCharacters: sl<GetCharacters>(), 
+                  repository: sl<CharacterRepository>())),
       ],
       child: const MyApp(),
     ),

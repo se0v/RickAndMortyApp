@@ -9,13 +9,7 @@ final sl = GetIt.instance;
 void init() {
   sl.registerLazySingleton<CharacterRepository>(() => CharacterRepositoryImpl());
 
-  //sl.registerLazySingleton<GetCharacters>(() => GetCharacters(sl()));
-
-  sl.registerFactory<GetCharacters>(
-    () => GetCharacters(sl<CharacterRepository>()),
-  );
-
-  sl.registerFactory<GetFavorites>(
-    () => GetFavorites(sl<CharacterRepository>()),
-  );
+  // sl.registerFactory<GetCharacters>(
+  //   () => GetCharacters(sl<CharacterRepository>()),
+  // );
 }
