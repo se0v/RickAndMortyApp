@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:randmapp/domain/entities/character.dart';
 import 'package:randmapp/utils/animation_star.dart';
-import '../../data/models/character_model.dart';
 import '../blocs/character/character_bloc.dart';
 
 class FavoritesPage extends StatefulWidget {
@@ -34,7 +34,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
         builder: (context, state) {
           if (state is CharacterLoaded) {
             List<Character> favorites = state.characters
-                .where((character) => character.isFavorite)
+                .where((character) => state.favoriteIds.contains(character.id))
                 .toList();
 
             if (_isSorted) {

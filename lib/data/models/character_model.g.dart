@@ -6,28 +6,28 @@ part of 'character_model.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class CharacterAdapter extends TypeAdapter<Character> {
+class CharacterModelAdapter extends TypeAdapter<CharacterModel> {
   @override
   final int typeId = 0;
 
   @override
-  Character read(BinaryReader reader) {
+  CharacterModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Character(
+    return CharacterModel(
       id: fields[0] as int,
       name: fields[1] as String,
       status: fields[2] as String,
       species: fields[3] as String,
-      image: fields[4] as String,
+      image: fields[4] as String?,
       isFavorite: fields[5] as bool,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Character obj) {
+  void write(BinaryWriter writer, CharacterModel obj) {
     writer
       ..writeByte(6)
       ..writeByte(0)
@@ -50,7 +50,7 @@ class CharacterAdapter extends TypeAdapter<Character> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CharacterAdapter &&
+      other is CharacterModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

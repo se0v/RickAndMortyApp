@@ -1,12 +1,13 @@
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:randmapp/domain/entities/character.dart';
 
 part 'character_model.g.dart';
 
 @HiveType(typeId: 0)
-class Character {
+class CharacterModel {
   @HiveField(0)
   final int id;
-
+  
   @HiveField(1)
   final String name;
 
@@ -16,57 +17,60 @@ class Character {
   @HiveField(3)
   final String species;
 
-  @HiveField(4)
-  final String image;
+  @HiveField(4) final String? image;
 
   @HiveField(5)
   final bool isFavorite;
 
-  Character({
+  CharacterModel({
     required this.id,
     required this.name,
     required this.status,
     required this.species,
-    required this.image,
+    this.image,
     this.isFavorite = false,
   });
 
-  factory Character.fromJson(Map<String, dynamic> json) {
-    return Character(
+  factory CharacterModel.fromJson(Map<String, dynamic> json) {
+    return CharacterModel(
       id: json['id'],
       name: json['name'],
       status: json['status'],
       species: json['species'],
-      image: json['image'],
+      image: null,
       isFavorite: json['isFavorite'] ?? false,
     );
   }
 
+  Character toEntity() => Character(
+    id: id, 
+    name: name, 
+    status: status, 
+    species: species, 
+    
+  );
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
       'status': status,
       'species': species,
-      'image': image,
       'isFavorite': isFavorite,
     };
   }
 
-  Character copyWith({
+  CharacterModel copyWith({
     int? id,
     String? name,
     String? status,
     String? species,
-    String? image,
     bool? isFavorite,
   }) {
-    return Character(
+    return CharacterModel(
       id: id ?? this.id,
       name: name ?? this.name,
       status: status ?? this.status,
       species: species ?? this.species,
-      image: image ?? this.image,
       isFavorite: isFavorite ?? this.isFavorite,
     );
   }

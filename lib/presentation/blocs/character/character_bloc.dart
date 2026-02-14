@@ -1,16 +1,21 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:randmapp/data/models/character_model.dart';
-import 'package:randmapp/data/repositories/character_repository.dart';
+import 'package:randmapp/domain/entities/character.dart';
+import 'package:randmapp/domain/usecases/get_characters.dart';
+import 'package:randmapp/domain/usecases/get_favorites.dart';
 
 part 'character_event.dart';
 part 'character_state.dart';
 
 class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
-  final CharacterRepository repository;
+  final GetCharacters getCharacters;
+  final GetFavorites getFavorites;
   List<Character> _characters = [];
+  Set<int> _favoriteIds = {};
   int _currentPage = 1;
 
-  CharacterBloc({required this.repository}) : super(CharacterLoading()) {
+  CharacterBloc({
+    required this.getCharacters, 
+    required this.getFavorites}) : super(CharacterLoading()) {
     on<FetchCharacters>(_onFetchCharacters);
     on<ToggleFavorite>(_onToggleFavorite);
 
@@ -28,15 +33,18 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
         emit(CharacterLoading());
       }
 
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
 
-      final newCharacters = await repository.fetchCharacters(page: event.page);
+      final newCharacters = await getCharacters(event.page);
       _characters.addAll(newCharacters);
-
-      emit(CharacterLoaded(
-        characters: _characters,
-        isLastPage: newCharacters.isEmpty,
-      ));
+      if (_favoriteIds.isEmpty) {
+      final favorites = await getFavorites();
+      _favoriteIds = favorites.map((c) => c.id).toSet();
+    }
+    emit(CharacterLoaded(
+      characters: _characters,
+      favoriteIds: _favoriteIds,
+    ));
     } catch (e, st) {
       emit(CharacterError(e.toString()));
       print(st);
@@ -56,11 +64,11 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
     }).toList();
 
     //TODO:
-    repository.updateCharacter(updatedCharacter);
+    //repository.updateCharacter(updatedCharacter);
 
-    emit(CharacterLoaded(
-      characters: _characters,
-    ));
+    // emit(CharacterLoaded(
+    //   characters: _characters,
+    // ));
   }
 
   void loadNextPage() {

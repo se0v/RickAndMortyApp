@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../data/models/character_model.dart';
+import 'package:randmapp/domain/entities/character.dart';
 
 class FavoriteItemTile extends StatefulWidget {
   final Character character;
@@ -59,20 +59,18 @@ class _FavoriteItemTileState extends State<FavoriteItemTile>
         return Transform.scale(
           scale: _scaleAnimation.value,
           child: ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(widget.character.image),
-            ),
+            
             title: Text(widget.character.name),
             subtitle: Text(
                 '${widget.character.status} - ${widget.character.species}'),
-            trailing: IconButton(
-              icon: Icon(
-                widget.character.isFavorite ? Icons.star : Icons.star_border,
-              ),
-              onPressed: () {
-                _animateStar();
-              },
-            ),
+            // trailing: IconButton(
+            //   icon: Icon(
+            //     widget.character.isFavorite ? Icons.star : Icons.star_border,
+            //   ),
+            //   onPressed: () {
+            //     _animateStar();
+            //   },
+            // ),
           ),
         );
       },

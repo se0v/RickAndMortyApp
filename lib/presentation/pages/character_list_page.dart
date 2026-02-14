@@ -71,6 +71,7 @@ class _CharacterListPageState extends State<CharacterListPage> {
                 if (index < state.characters.length) {
                   final character = state.characters[index];
                   return FavoriteItemTile(
+
                     character: character,
                     onToggleFavorite: () {
                       context

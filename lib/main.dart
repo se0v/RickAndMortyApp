@@ -1,25 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:randmapp/core/di.dart';
+import 'package:randmapp/core/di.dart' as di;
+import 'package:randmapp/domain/usecases/get_characters.dart';
+import 'package:randmapp/domain/usecases/get_favorites.dart';
 import 'data/models/character_model.dart';
 import 'presentation/blocs/character/character_bloc.dart';
 import 'presentation/blocs/theme/theme_bloc.dart';
-import 'data/repositories/character_repository.dart';
 import 'presentation/pages/home_page.dart';
 
 void main() async {
   await Hive.initFlutter();
 
-  Hive.registerAdapter(CharacterAdapter());
+  Hive.registerAdapter(CharacterModelAdapter());
 
-  await Hive.openBox<Character>('characters');
+  await Hive.openBox<CharacterModel>('characters');
+  di.init();
+
   runApp(
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => ThemeBloc()),
         BlocProvider(
             create: (context) =>
-                CharacterBloc(repository: CharacterRepository())),
+                CharacterBloc(
+                  getCharacters: sl<GetCharacters>(), 
+                  getFavorites: sl<GetFavorites>())),
       ],
       child: const MyApp(),
     ),
