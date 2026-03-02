@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:randmapp/domain/entities/character.dart';
+import 'package:randmapp/presentation/pages/character_detail_page.dart';
 
 class FavoriteItemTile extends StatefulWidget {
   final Character character;
@@ -59,10 +60,17 @@ class _FavoriteItemTileState extends State<FavoriteItemTile>
         return Transform.scale(
           scale: _scaleAnimation.value,
           child: ListTile(
-            
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(widget.character.image),
+            ),
             title: Text(widget.character.name),
             subtitle: Text(
                 '${widget.character.status} - ${widget.character.species}'),
+                onTap: () {
+                  Navigator.push(context,
+                  MaterialPageRoute(
+                    builder: (_) => CharacterDetailPage(character: widget.character),));
+                },
             // trailing: IconButton(
             //   icon: Icon(
             //     widget.character.isFavorite ? Icons.star : Icons.star_border,

@@ -8,8 +8,13 @@ final sl = GetIt.instance;
 
 void init() {
   sl.registerLazySingleton<CharacterRepository>(() => CharacterRepositoryImpl());
-
-  // sl.registerFactory<GetCharacters>(
-  //   () => GetCharacters(sl<CharacterRepository>()),
-  // );
 }
+
+// class ApiService {
+//   ApiService._internal();
+//   static final ApiService _instance = ApiService._internal();
+//   factory ApiService() => _instance;
+// }
+
+// final api1 = ApiService();
+// final api2 = ApiService();

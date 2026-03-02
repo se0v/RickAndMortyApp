@@ -17,7 +17,7 @@ class CharacterModel {
   @HiveField(3)
   final String species;
 
-  @HiveField(4) final String? image;
+  @HiveField(4) final String image;
 
   @HiveField(5)
   final bool isFavorite;
@@ -27,7 +27,7 @@ class CharacterModel {
     required this.name,
     required this.status,
     required this.species,
-    this.image,
+    required this.image,
     this.isFavorite = false,
   });
 
@@ -37,7 +37,7 @@ class CharacterModel {
       name: json['name'],
       status: json['status'],
       species: json['species'],
-      image: null,
+      image: json['image'],
       isFavorite: json['isFavorite'] ?? false,
     );
   }
@@ -47,7 +47,8 @@ class CharacterModel {
     name: name, 
     status: status, 
     species: species, 
-    
+    image: image,
+    isFavorite: isFavorite,
   );
   Map<String, dynamic> toJson() {
     return {
@@ -55,6 +56,7 @@ class CharacterModel {
       'name': name,
       'status': status,
       'species': species,
+      'image': image,
       'isFavorite': isFavorite,
     };
   }
@@ -64,6 +66,7 @@ class CharacterModel {
     String? name,
     String? status,
     String? species,
+    String? image,
     bool? isFavorite,
   }) {
     return CharacterModel(
@@ -71,6 +74,7 @@ class CharacterModel {
       name: name ?? this.name,
       status: status ?? this.status,
       species: species ?? this.species,
+      image: image ?? this.image,
       isFavorite: isFavorite ?? this.isFavorite,
     );
   }

@@ -26,8 +26,8 @@ void main() async {
         BlocProvider(
             create: (context) =>
                 CharacterBloc(
-                  //getCharacters: sl<GetCharacters>(), 
-                  repository: sl<CharacterRepository>())),
+                  repository: sl<CharacterRepository>(),
+                  )),
       ],
       child: const MyApp(),
     ),

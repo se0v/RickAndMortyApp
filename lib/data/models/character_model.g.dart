@@ -21,7 +21,7 @@ class CharacterModelAdapter extends TypeAdapter<CharacterModel> {
       name: fields[1] as String,
       status: fields[2] as String,
       species: fields[3] as String,
-      image: fields[4] as String?,
+      image: fields[4] as String,
       isFavorite: fields[5] as bool,
     );
   }

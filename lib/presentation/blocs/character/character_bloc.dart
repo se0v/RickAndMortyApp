@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:randmapp/domain/entities/character.dart';
 import 'package:randmapp/domain/repositories/character_repository.dart';
+import 'package:randmapp/domain/usecases/get_characters.dart';
+import 'package:randmapp/domain/usecases/get_favorites.dart';
 
 part 'character_event.dart';
 part 'character_state.dart';
@@ -12,7 +14,8 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
   int _currentPage = 1;
 
   CharacterBloc({
-    required this.repository}) : super(CharacterLoading()) {
+    required this.repository
+    }) : super(CharacterLoading()) {
     on<FetchCharacters>(_onFetchCharacters);
     on<ToggleFavorite>(_onToggleFavorite);
 
@@ -33,10 +36,10 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
       await Future.delayed(const Duration(seconds: 2));
 
       final newCharacters = await repository.getCharacters(event.page);
-      _characters.addAll(newCharacters);
+      _characters.addAll(newCharacters as Iterable<Character>);
       if (_favoriteIds.isEmpty) {
-      final favorites = await repository.getFavorites();
-      _favoriteIds = favorites.map((c) => c.id).toSet();
+      //final favorites = await repository.getFavorites();
+      //_favoriteIds = favorites.map((c) => c.id).toSet();
     }
     emit(CharacterLoaded(
       characters: _characters,

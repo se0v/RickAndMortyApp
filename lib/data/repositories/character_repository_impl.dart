@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
 import 'package:randmapp/domain/repositories/character_repository.dart';
@@ -9,17 +10,17 @@ class CharacterRepositoryImpl implements CharacterRepository {
   final String baseUrl = 'https://rickandmortyapi.com/api/character';
   final Box<CharacterModel> _box = Hive.box<CharacterModel>('characters');
 
-  // Future<bool> _hasInternet() async {
-  //   try {
-  //     final result = await InternetAddress.lookup('google.com');
-  //     return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-  //   } on SocketException catch (_) {
-  //     return false;
-  //   }
-  // }
+  Future<bool> _hasInternet() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } on SocketException catch (_) {
+      return false;
+    }
+  }
 
   Future<List<CharacterModel>> fetchCharacters({required int page}) async {
-    //bool hasInternet = await _hasInternet();
+    bool hasInternet = await _hasInternet();
       try{
       final response = await http.get(Uri.parse('$baseUrl?page=$page'));
       if (response.statusCode == 200) {
@@ -55,6 +56,11 @@ class CharacterRepositoryImpl implements CharacterRepository {
       }
      catch (e) {
       final allCharacters = _box.values.toList();
+
+      if (allCharacters.isEmpty) {
+        throw Exception('No cached data available');
+      }
+
       const pageSize = 20;
       final start = (page - 1) * pageSize;
       final end = start + pageSize;
@@ -74,17 +80,15 @@ class CharacterRepositoryImpl implements CharacterRepository {
   @override
   Future<List<Character>> getCharacters(int page) async {
     final models = await fetchCharacters(page: page);
-    return models.map((m) => m.toEntity()).toList();
+    return models.map<Character>((m) => m.toEntity()).toList();
   }
 
-  @override
   List<Character> getFavorites() {
     final models = _box.values.where((c) => c.isFavorite).toList();
     return models.map((m) => m.toEntity()).toList();
     //return _box.values.where((character) => character.isFavorite).toList();
   }
 
-  @override
   void updateFavoriteStatus(int characterId, bool isFavorite) {
     final existing = _box.get(characterId);
     if (existing != null) {
