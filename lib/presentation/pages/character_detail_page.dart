@@ -16,9 +16,14 @@ class CharacterDetailPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CircleAvatar(
-              radius: 60,
-              backgroundImage: NetworkImage(character.image),
-            ),
+  radius: 60,
+  backgroundImage: character.image.isNotEmpty
+      ? NetworkImage(character.image)
+      : null,
+  child: character.image.isEmpty
+      ? const Icon(Icons.person, size: 60)
+      : null,
+),
             const SizedBox(height: 16),
             Text('Status: ${character.status}', style: Theme.of(context).textTheme.titleMedium),
             Text('Species: ${character.species}', style: Theme.of(context).textTheme.bodyMedium),

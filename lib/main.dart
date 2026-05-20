@@ -4,8 +4,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:randmapp/core/di.dart';
 import 'package:randmapp/core/di.dart' as di;
 import 'package:randmapp/domain/repositories/character_repository.dart';
-import 'package:randmapp/domain/usecases/get_characters.dart';
-import 'package:randmapp/domain/usecases/get_favorites.dart';
 import 'data/models/character_model.dart';
 import 'presentation/blocs/character/character_bloc.dart';
 import 'presentation/blocs/theme/theme_bloc.dart';

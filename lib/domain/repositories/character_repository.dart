@@ -1,7 +1,3 @@
-
-
-
-import 'package:randmapp/data/models/character_model.dart';
 import 'package:randmapp/domain/entities/character.dart';
 
 abstract class CharacterRepository {

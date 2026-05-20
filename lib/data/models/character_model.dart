@@ -50,16 +50,6 @@ class CharacterModel {
     image: image,
     isFavorite: isFavorite,
   );
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'status': status,
-      'species': species,
-      'image': image,
-      'isFavorite': isFavorite,
-    };
-  }
 
   CharacterModel copyWith({
     int? id,
@@ -77,5 +67,16 @@ class CharacterModel {
       image: image ?? this.image,
       isFavorite: isFavorite ?? this.isFavorite,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'status': status,
+      'species': species,
+      'image': image,
+      'isFavorite': isFavorite,
+    };
   }
 }

@@ -61,8 +61,13 @@ class _FavoriteItemTileState extends State<FavoriteItemTile>
           scale: _scaleAnimation.value,
           child: ListTile(
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(widget.character.image),
-            ),
+  backgroundImage: widget.character.image.isNotEmpty
+      ? NetworkImage(widget.character.image)
+      : null,
+  child: widget.character.image.isEmpty
+      ? const Icon(Icons.person)
+      : null,
+),
             title: Text(widget.character.name),
             subtitle: Text(
                 '${widget.character.status} - ${widget.character.species}'),
