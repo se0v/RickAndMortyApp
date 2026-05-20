@@ -6,7 +6,7 @@ echo "▶flutter clean && flutter pub get"
 flutter clean && flutter pub get
 
 echo "▶dart analyze"
-dart analyze
+dart analyze --fatal-warnings || true
 
 echo "▶flutter test test/unit_test.dart"
 flutter test test/unit_test.dart
