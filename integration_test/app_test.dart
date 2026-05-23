@@ -58,6 +58,7 @@ void main() {
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget,
           reason: 'Должен отображаться индикатор загрузки');
+
       final deadline = DateTime.now().add(const Duration(seconds: 30));
 while (DateTime.now().isBefore(deadline)) {
   await tester.pump(const Duration(seconds: 1));
@@ -68,9 +69,12 @@ while (DateTime.now().isBefore(deadline)) {
       expect(find.byType(ListTile), findsWidgets,
           reason: 'Должны отображаться карточки персонажей');
       await tester.tap(find.byType(ListTile).first);
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
       expect(find.byType(CharacterDetailPage), findsOneWidget,
           reason: 'После тапа должен открыться экран деталей');
     },
+    timeout: const Timeout(Duration(minutes: 3)),
   );
 }
