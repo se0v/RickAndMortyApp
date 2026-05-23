@@ -22,6 +22,12 @@ jobs:
           channel: "stable"
           cache: true
 
+      - name: Boot iOS Simulator
+        run: |
+          UDID=$(xcrun simctl list devices available | grep "iPhone 16 " | head -1 | grep -oE '[A-F0-9-]{36}')
+          xcrun simctl boot "$UDID"
+          echo "SIMULATOR_UDID=$UDID" >> $GITHUB_ENV
+
       - name: Make CI script executable
         run: chmod +x ci.sh
 
