@@ -59,11 +59,12 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsOneWidget,
           reason: 'Должен отображаться индикатор загрузки');
 
-      final deadline = DateTime.now().add(const Duration(seconds: 30));
-while (DateTime.now().isBefore(deadline)) {
-  await tester.pump(const Duration(seconds: 1));
-  if (find.byType(ListTile).evaluate().isNotEmpty) break;
-}
+      await tester.runAsync(() async {
+  await Future.delayed(const Duration(seconds: 15));
+});
+await tester.pump();
+await tester.pump(const Duration(seconds: 1));
+
       expect(find.byType(CircularProgressIndicator), findsNothing,
           reason: 'Индикатор должен исчезнуть после загрузки');
       expect(find.byType(ListTile), findsWidgets,
