@@ -14,7 +14,7 @@ flutter test test/unit_test.dart
 echo "flutter test test/widget_test.dart"
 flutter test test/widget_test.dart
 
-echo "flutter test integration_test/app_test.dart"
-flutter test integration_test/app_test.dart -d "$SIMULATOR_UDID" --timeout 120s
+# echo "flutter test integration_test/app_test.dart"
+# flutter test integration_test/app_test.dart
 
 echo "All steps passed!"

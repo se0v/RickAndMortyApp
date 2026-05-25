@@ -58,24 +58,15 @@ void main() {
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget,
           reason: 'Должен отображаться индикатор загрузки');
-
-      await tester.runAsync(() async {
-  await Future.delayed(const Duration(seconds: 15));
-});
-await tester.pump();
-await tester.pump(const Duration(seconds: 1));
-
+      await tester.pumpAndSettle(const Duration(seconds: 10));
       expect(find.byType(CircularProgressIndicator), findsNothing,
           reason: 'Индикатор должен исчезнуть после загрузки');
       expect(find.byType(ListTile), findsWidgets,
           reason: 'Должны отображаться карточки персонажей');
       await tester.tap(find.byType(ListTile).first);
-      await tester.pump();
-      await tester.pump(const Duration(seconds: 1));
-
+      await tester.pumpAndSettle();
       expect(find.byType(CharacterDetailPage), findsOneWidget,
           reason: 'После тапа должен открыться экран деталей');
     },
-    timeout: const Timeout(Duration(minutes: 3)),
   );
 }
