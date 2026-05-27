@@ -1,6 +1,5 @@
 #!/bin/bash
-rm -rf android/.gradle
-rm -rf ~/.gradle/caches
+
 set -e
 
 echo "flutter clean && flutter pub get"
