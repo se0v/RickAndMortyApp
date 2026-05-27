@@ -1,0 +1,75 @@
+name: CD
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.32.0"
+          channel: "stable"
+          cache: true
+
+      - name: Install Ruby and Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: Install Fastlane
+        run: gem install fastlane
+
+      - name: Check required secrets
+        run: |
+          if [ -z "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+            echo "KEYSTORE_BASE64 secret is missing"
+            exit 1
+          fi
+          if [ -z "${{ secrets.KEYSTORE_PASSWORD }}" ]; then
+            echo "KEYSTORE_PASSWORD secret is missing"
+            exit 1
+          fi
+          if [ -z "${{ secrets.KEY_ALIAS }}" ]; then
+            echo "KEY_ALIAS secret is missing"
+            exit 1
+          fi
+          if [ -z "${{ secrets.KEY_PASSWORD }}" ]; then
+            echo "KEY_PASSWORD secret is missing"
+            exit 1
+          fi
+          if [ -z "${{ secrets.GOOGLE_PLAY_JSON_KEY }}" ]; then
+            echo "GOOGLE_PLAY_JSON_KEY secret is missing"
+            exit 1
+          fi
+          echo "All secrets present"
+
+      - name: Setup keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ~/release-key.jks
+          cat > android/key.properties << 'KEYEOF'
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=/home/runner/release-key.jks
+          KEYEOF
+
+      - name: Setup Google Play JSON key
+        run: |
+          echo '${{ secrets.GOOGLE_PLAY_JSON_KEY }}' > ~/fastlane-key.json
+          echo "GOOGLE_PLAY_JSON_KEY_PATH=$HOME/fastlane-key.json" >> $GITHUB_ENV
+
+      - name: Make CD script executable
+        run: chmod +x cd.sh
+
+      - name: Run CD script
+        run: ./cd.sh

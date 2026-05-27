@@ -1,0 +1,11 @@
+default_platform(:android)
+
+platform :android do
+  desc "Deploy to Google Play Internal Testing"
+  lane :deploy do
+    upload_to_play_store(
+      track: "internal",
+      apk: "../build/app/outputs/flutter-apk/app-release.apk"
+    )
+  end
+end
