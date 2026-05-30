@@ -9,11 +9,6 @@ if [ -z "$GOOGLE_PLAY_JSON_KEY" ]; then
     exit 1
 fi
 
-if [ -z "$KEYSTORE_BASE64" ]; then
-    echo "FATAL: KEYSTORE_BASE64 is empty in GitHub Secrets!"
-    exit 1
-fi
-
 echo "Secrets found."
 
 mkdir -p android/fastlane
@@ -21,9 +16,6 @@ mkdir -p android/app
 
 echo "Writing Play Store Key..."
 printf '%s\n' "$GOOGLE_PLAY_JSON_KEY" > android/fastlane/play-store-key.json
-
-echo "Writing Keystore..."
-echo "$KEYSTORE_BASE64" | base64 --decode > android/app/key.jks
 
 echo "--- DEBUG: First 5 lines of play-store-key.json ---"
 head -n 5 android/fastlane/play-store-key.json
