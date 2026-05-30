@@ -2,7 +2,7 @@
 
 set -e
 
-echo "🔐 Setting up secrets..."
+echo "Setting up secrets..."
 
 if [ -z "$GOOGLE_PLAY_JSON_KEY" ]; then
     echo "FATAL: GOOGLE_PLAY_JSON_KEY is empty in GitHub Secrets!"

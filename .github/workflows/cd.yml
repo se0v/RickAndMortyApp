@@ -63,13 +63,14 @@ jobs:
           storeFile=/home/runner/release-key.jks
           KEYEOF
 
-      - name: Setup Google Play JSON key
-        run: |
-          echo '${{ secrets.GOOGLE_PLAY_JSON_KEY }}' > ~/fastlane-key.json
-          echo "GOOGLE_PLAY_JSON_KEY=$HOME/fastlane-key.json" >> $GITHUB_ENV
-
       - name: Make CD script executable
         run: chmod +x cd.sh
 
       - name: Run CD script
         run: ./cd.sh
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          GOOGLE_PLAY_JSON_KEY: ${{ secrets.GOOGLE_PLAY_JSON_KEY }}
