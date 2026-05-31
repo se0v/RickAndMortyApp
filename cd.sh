@@ -34,8 +34,8 @@ echo "Files created successfully."
 echo "flutter clean && flutter pub get"
 flutter clean && flutter pub get
 
-echo "flutter build apk --release"
-flutter build apk --release
+echo "flutter build appbundle --release"
+flutter build appbundle --release
 
 echo "fastlane deploy"
 cd android

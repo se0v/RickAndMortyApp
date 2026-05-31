@@ -5,7 +5,7 @@ platform :android do
   lane :deploy do
     upload_to_play_store(
       track: "internal",
-      apk: "../build/app/outputs/flutter-apk/app-release.apk"
+      aab: "../build/app/outputs/bundle/release/app-release.aab"
     )
   end
 end
