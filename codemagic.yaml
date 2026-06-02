@@ -10,7 +10,7 @@ workflows:
       groups:
         - google_play_credentials
       vars:
-        PACKAGE_NAME: "com.seovulf.rickandmorty"
+        PACKAGE_NAME: "com.seovulf.randmapp"
         GOOGLE_PLAY_TRACK: internal
       flutter: stable
 
