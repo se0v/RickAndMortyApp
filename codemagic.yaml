@@ -6,9 +6,9 @@ workflows:
 
     environment:
       android_signing:
-        - keystore_reference
+        - keystore_credentials
       groups:
-        - google_play
+        - google_play_credentials
       vars:
         PACKAGE_NAME: "com.seovulf.rickandmorty"
         GOOGLE_PLAY_TRACK: internal
