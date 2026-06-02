@@ -55,6 +55,6 @@ workflows:
           success: true
           failure: true
       google_play:
-        credentials: $GOOGLE_PLAY_SERVICE_ACCOUNT_CREDENTIALS
+        credentials: $GOOGLE_PLAY_JSON_KEY
         track: $GOOGLE_PLAY_TRACK
         submit_as_draft: true
