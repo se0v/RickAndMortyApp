@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'character_list_page.dart';
 import 'favorites_page.dart';
@@ -25,6 +26,12 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Rick and Morty'),
         actions: [
+          ElevatedButton(
+  onPressed: () {
+    FirebaseCrashlytics.instance.crash();
+  },
+  child: const Icon(Icons.warning),
+),
           IconButton(
             icon: const Icon(Icons.logout),
             tooltip: 'Выйти из аккаунта',

@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:randmapp/domain/entities/character.dart';
 import 'package:randmapp/domain/repositories/character_repository.dart';
@@ -7,6 +8,7 @@ part 'character_event.dart';
 part 'character_state.dart';
 
 class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
+  final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
   final CharacterRepository repository;
   final FavoritesRepository favoritesRepository;
   final List<Character> _characters = [];
@@ -59,12 +61,20 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
     final isFav = await favoritesRepository.isFavorite(event.character.id);
 
     if (isFav) {
-      await favoritesRepository.removeFavorite(event.character.id);
-      _favoriteIds.remove(event.character.id);
-    } else {
-      await favoritesRepository.addFavorite(event.character);
-      _favoriteIds.add(event.character.id);
-    }
+    await favoritesRepository.removeFavorite(event.character.id);
+    _favoriteIds.remove(event.character.id);
+    await _analytics.logEvent(
+      name: 'favorite_removed',
+      parameters: {'character_id': event.character.id, 'character_name': event.character.name},
+    );
+  } else {
+    await favoritesRepository.addFavorite(event.character);
+    _favoriteIds.add(event.character.id);
+    await _analytics.logEvent(
+      name: 'favorite_added',
+      parameters: {'character_id': event.character.id, 'character_name': event.character.name},
+    );
+  }
 
     emit(state is CharacterLoaded
         ? (state as CharacterLoaded).copyWith(favoriteIds: _favoriteIds)
