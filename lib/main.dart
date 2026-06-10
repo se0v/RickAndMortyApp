@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:randmapp/core/di.dart';
 import 'package:randmapp/core/di.dart' as di;
+import 'package:randmapp/data/repositories/remote_config_repository.dart';
 import 'package:randmapp/domain/repositories/auth_repository.dart';
 import 'package:randmapp/domain/repositories/character_repository.dart';
 import 'package:randmapp/domain/repositories/favorites_repository.dart';
@@ -22,6 +23,10 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  final remoteConfig = RemoteConfigRepository();
+  await remoteConfig.init();
+  final isDarkMode = remoteConfig.isDarkMode;
+
   await Hive.initFlutter();
 
   Hive.registerAdapter(CharacterModelAdapter());
@@ -32,7 +37,7 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => ThemeBloc()),
+        BlocProvider(create: (_) => ThemeBloc()..add(SetTheme(isDark: isDarkMode))),
         BlocProvider(create: (_) => AuthBloc(authRepository: sl<AuthRepository>())),
         BlocProvider(
             create: (context) =>
