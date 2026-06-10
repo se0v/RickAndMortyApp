@@ -13,7 +13,7 @@ void main() {
   setUp(() {
     mockRepository = MockCharactersRepository();
     
-    bloc = CharacterBloc(repository: mockRepository);
+    bloc = CharacterBloc(repository: mockRepository, favoritesRepository: null as dynamic);
   });
 
   tearDown(() {

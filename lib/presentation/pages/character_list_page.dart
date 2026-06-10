@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../utils/animation_star.dart';
+import '../../utils/favorite_item_tile.dart';
 import '../blocs/character/character_bloc.dart';
 import '../blocs/theme/theme_bloc.dart';
 
@@ -70,9 +70,12 @@ class _CharacterListPageState extends State<CharacterListPage> {
               itemBuilder: (context, index) {
                 if (index < state.characters.length) {
                   final character = state.characters[index];
+                  final bool isFav = state.favoriteIds.contains(character.id);
+                  
                   return FavoriteItemTile(
 
                     character: character,
+                    isFavorite: isFav,
                     onToggleFavorite: () {
                       context
                           .read<CharacterBloc>()

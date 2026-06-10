@@ -20,6 +20,7 @@ class CharacterLoaded extends CharacterState {
 
   CharacterLoaded copyWith({
     List<Character>? characters,
+    Set<int>? favoriteIds,
     bool? isLoading,
     bool? isLastPage,
   }) {

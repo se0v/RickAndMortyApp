@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:randmapp/domain/entities/character.dart';
-import 'package:randmapp/utils/animation_star.dart';
+import 'package:randmapp/utils/favorite_item_tile.dart';
 import '../blocs/character/character_bloc.dart';
 
 class FavoritesPage extends StatefulWidget {
@@ -55,7 +55,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                     context
                         .read<CharacterBloc>()
                         .add(ToggleFavorite(character: character));
-                  },
+                  }, isFavorite: true,
                 );
               },
             );

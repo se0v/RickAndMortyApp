@@ -1,6 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:randmapp/domain/entities/character.dart';
-import 'package:randmapp/presentation/blocs/character/character_bloc.dart';
 
 part 'theme_event.dart';
 part 'theme_state.dart';

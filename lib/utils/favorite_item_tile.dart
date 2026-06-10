@@ -5,11 +5,13 @@ import 'package:randmapp/presentation/pages/character_detail_page.dart';
 class FavoriteItemTile extends StatefulWidget {
   final Character character;
   final VoidCallback onToggleFavorite;
+  final bool isFavorite;
 
   const FavoriteItemTile({
     super.key,
     required this.character,
     required this.onToggleFavorite,
+    required this.isFavorite,
   });
 
   @override
@@ -76,14 +78,14 @@ class _FavoriteItemTileState extends State<FavoriteItemTile>
                   MaterialPageRoute(
                     builder: (_) => CharacterDetailPage(character: widget.character),));
                 },
-            // trailing: IconButton(
-            //   icon: Icon(
-            //     widget.character.isFavorite ? Icons.star : Icons.star_border,
-            //   ),
-            //   onPressed: () {
-            //     _animateStar();
-            //   },
-            // ),
+            trailing: IconButton(
+              icon: Icon(
+                widget.isFavorite ? Icons.star : Icons.star_border,
+              ),
+              onPressed: () {
+                _animateStar();
+              },
+            ),
           ),
         );
       },

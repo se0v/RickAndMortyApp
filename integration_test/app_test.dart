@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:randmapp/core/di.dart' as di;
 import 'package:randmapp/data/models/character_model.dart';
 import 'package:randmapp/domain/repositories/character_repository.dart';
+import 'package:randmapp/domain/repositories/favorites_repository.dart';
 import 'package:randmapp/presentation/blocs/character/character_bloc.dart';
 import 'package:randmapp/presentation/blocs/theme/theme_bloc.dart';
 import 'package:randmapp/presentation/pages/home_page.dart';
@@ -39,9 +40,8 @@ void main() {
             BlocProvider(create: (_) => ThemeBloc()),
             BlocProvider(
               create: (_) => CharacterBloc(
-                repository: di.sl<CharacterRepository>(),
+                repository: di.sl<CharacterRepository>(), favoritesRepository: di.sl<FavoritesRepository>()),
               ),
-            ),
           ],
           child: BlocBuilder<ThemeBloc, ThemeState>(
             builder: (context, state) {
